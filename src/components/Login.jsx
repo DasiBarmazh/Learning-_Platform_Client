@@ -1,17 +1,16 @@
-import { useState } from 'react';
-import {
-  TextField,
-  Button,
-  Typography,
-  Box,
-  Stack,
-  Avatar,
-  Paper,
-  Alert
-} from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useNavigate } from 'react-router-dom';
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Paper,
+  TextField,
+  Typography
+} from '@mui/material';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../Redux/Thunk';
 const Login = () => {
   const [name, setName] = useState('');
