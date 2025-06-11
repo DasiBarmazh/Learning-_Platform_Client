@@ -23,7 +23,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { loading, error, currentUser } = useSelector(state => state.users);
 
-  // ולידציה בסיסית
   const validate = () => {
     const newErrors = {};
     if (!name.trim()) newErrors.name = 'יש להזין שם';
@@ -36,7 +35,6 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // שליחת טופס
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
@@ -45,6 +43,7 @@ const Login = () => {
 
     try {
       const result = await dispatch(loginUser({ Name: name, Phone: phone })).unwrap();
+      console.log('login result:', result);
       setMessageType('success');
       setMessage('התחברת בהצלחה!');
       setName('');
@@ -58,8 +57,9 @@ const Login = () => {
       setMessage(err || 'שגיאת התחברות');
     }
   };
-
+console.log('Redux currentUser:', currentUser);
   return (
+   
     <Box sx={{
       minHeight: '100vh',
       bgcolor: 'blue.50',

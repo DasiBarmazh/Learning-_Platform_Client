@@ -1,6 +1,31 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-// thunk להתחברות משתמש
+export const fetchCategories = createAsyncThunk(
+  'categories/fetchCategories',
+  async (_, thunkAPI) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:5282/api/Category/all', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        console.error('שגיאת שרת:', response.status, err);
+        throw new Error(err || 'שגיאת שרת');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      if (error.name === 'TypeError') {
+        return thunkAPI.rejectWithValue('שרת לא זמין');
+      }
+      console.error('שגיאה ב-fetchCategories:', error);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+
 export const loginUser = createAsyncThunk(
   'users/loginUser',
   async ({ Name, Phone }, thunkAPI) => {
