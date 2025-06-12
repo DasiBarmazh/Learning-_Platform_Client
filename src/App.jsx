@@ -1,4 +1,6 @@
 import Login from './components/Login';
+import Register from './components/Register';
+import HomePage from './components/HomePage'; 
 import { Routes, Route } from 'react-router-dom';
 import Categories from './components/categories';
 import SubCategories from './components/SubCategories';
@@ -20,7 +22,9 @@ function App() {
   }}
     >
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/Login" element={<Login />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/subcategories/:categoryId" element={<SubCategories />} />
         <Route path="/prompt/:categoryId/:subCategoryId" element={<Prompt />} />     

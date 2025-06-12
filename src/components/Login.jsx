@@ -19,6 +19,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('info');
+  const [showRegister, setShowRegister] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,27 +41,33 @@ const Login = () => {
     e.preventDefault();
     setMessage('');
     setErrors({});
+    setShowRegister(false);
     if (!validate()) return;
 
     try {
       const result = await dispatch(loginUser({ Name: name, Phone: phone })).unwrap();
-      console.log('login result:', result);
       setMessageType('success');
       setMessage('התחברת בהצלחה!');
       setName('');
       setPhone('');
       if (result && result.token) {
         localStorage.setItem('token', result.token);
-        navigate('/Categories'); 
+        navigate('/Categories');
       }
     } catch (err) {
-      setMessageType('error');
-      setMessage(err || 'שגיאת התחברות');
+      // בדיקת שגיאה של משתמש לא קיים
+      if (err === 'Invalid credentials.') {
+        setMessageType('error');
+        setMessage('המשתמש לא קיים במערכת.');
+        setShowRegister(true);
+      } else {
+        setMessageType('error');
+        setMessage(err || 'שגיאת התחברות');
+      }
     }
   };
-console.log('Redux currentUser:', currentUser);
+
   return (
-   
     <Box sx={{
       minHeight: '100vh',
       bgcolor: 'blue.50',
@@ -91,9 +98,19 @@ console.log('Redux currentUser:', currentUser);
         {message && (
           <Alert severity={messageType} sx={{ width: '100%', mb: 2 }}>
             {message}
+            {showRegister && (
+              <Button
+                color="secondary"
+                variant="outlined"
+                sx={{ mt: 2, ml: 2 }}
+                onClick={() => navigate('/register')}
+              >
+                להרשמה לחץ כאן
+              </Button>
+            )}
           </Alert>
         )}
-        {error && (
+        {error && !showRegister && (
           <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
             {error}
           </Alert>

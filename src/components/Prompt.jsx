@@ -1,13 +1,17 @@
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { Alert, Avatar, Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { sendPrompt } from '../Redux/promptThunks';
 import { setUserPrompt } from '../Redux/promptSlice';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const Prompt = () => {
   const dispatch = useDispatch();
   const { userPrompt, lesson, loading, error } = useSelector(state => state.prompt);
+  const { currentUser } = useSelector(state => state.users); // גישה ל-currentUser
+  const [showUserError, setShowUserError] = useState(false);
+
   const { categoryId, subCategoryId } = useParams();
 
   const category = useSelector(state =>
@@ -16,6 +20,15 @@ const Prompt = () => {
   const subCategory = useSelector(state =>
     state.subCategories.subCategories.find(sc => String(sc.id) === String(subCategoryId))
   );
+
+  useEffect(() => {
+    if (error) {
+      console.error('Prompt error:', error);
+      setShowUserError(true);
+    } else {
+      setShowUserError(false);
+    }
+  }, [error]);
 
   const handleChange = (e) => {
     dispatch(setUserPrompt(e.target.value));
@@ -27,7 +40,8 @@ const Prompt = () => {
       dispatch(sendPrompt({
         category: category.name,
         subCategory: subCategory.name,
-        userPrompt
+        userPrompt,
+        userId: currentUser ? currentUser.id : null, 
       }));
     }
   };
@@ -70,13 +84,12 @@ const Prompt = () => {
           שליחה
         </Button>
       </form>
-      {(!category || !subCategory) && (
-        <Alert severity="warning" sx={{ mt: 2 }}>
-          לא נמצאה קטגוריה או תת־קטגוריה מתאימה. נסה לחזור ולבחור שוב.
+      {loading && <CircularProgress sx={{ mt: 3 }} />}
+      {showUserError && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          אירעה שגיאה. נסה שוב מאוחר יותר.
         </Alert>
       )}
-      {loading && <CircularProgress sx={{ mt: 3 }} />}
-      {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
       {lesson && (
         <Box sx={{ mt: 3, width: '100%' }}>
           <Typography variant="subtitle1" fontWeight="bold" mb={1}>תשובה:</Typography>

@@ -1,10 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL; 
+
 export const fetchSubCategories = createAsyncThunk(
   'subCategories/fetchSubCategories',
   async (categoryId, thunkAPI) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5282/api/Category/${categoryId}/subcategories`, {
+      const response = await fetch(`${API_BASE_URL}/Category/${categoryId}/subcategories`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       if (!response.ok) {

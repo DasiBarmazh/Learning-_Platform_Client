@@ -1,16 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL; 
 
 export const sendPrompt = createAsyncThunk(
   'prompt/sendPrompt',
-  async ({ category, subCategory, userPrompt }, thunkAPI) => {
+  async ({ category, subCategory, userPrompt, userId }, thunkAPI) => { // הוסף userId כאן
     try {
-      const response = await fetch('http://localhost:5282/api/Prompt/lesson', {
+      const response = await fetch(`${API_BASE_URL}/Prompt/lesson`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           category,
           subCategory,
           userPrompt,
+          userId, // הוסף את userId ל-body
         }),
       });
       if (!response.ok) {
