@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import { Alert, Box, Button, CircularProgress, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCategories, setCurrentCategory } from '../Redux/CategorySlice';
 import { useNavigate } from 'react-router-dom';
-import { Button, Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { fetchCategories } from '../Redux/categoryThunks';
+import { setCurrentCategory } from '../Redux/CategorySlice';
 
 const Categories = () => {
   const dispatch = useDispatch();

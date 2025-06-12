@@ -1,23 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
-// Thunk לשליפת כל הקטגוריות מהשרת
-export const fetchCategories = createAsyncThunk(
-  'categories/fetchCategories',
-  async (_, thunkAPI) => {
-    try {
-      const response = await fetch('http://localhost:5282/api/Category/all');
-      if (!response.ok) {
-        const err = await response.text();
-        throw new Error(err || 'שגיאת שרת');
-      }
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('שגיאה ב-fetchCategories:', error);
-      return thunkAPI.rejectWithValue(error.message || 'שגיאת שרת');
-    }
-  }
-);
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchCategories } from './categoryThunks';
 
 const categorySlice = createSlice({
   name: 'categories',

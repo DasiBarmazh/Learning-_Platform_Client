@@ -2,6 +2,7 @@ import Login from './components/Login';
 import { Routes, Route } from 'react-router-dom';
 import Categories from './components/categories';
 import SubCategories from './components/SubCategories';
+import Prompt from './components/Prompt';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/subcategories/:categoryId" element={<SubCategories />} />
-        {/* בעתיד: <Route path="/details/:subCategoryId" element={<Details />} /> */}
+        <Route path="/prompt/:categoryId/:subCategoryId" element={<Prompt />} />     
       </Routes>
     </div>
   );

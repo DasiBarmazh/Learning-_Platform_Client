@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUser } from './Thunk';
+import { loginUser } from './userThunks';
+
 const userSlice = createSlice({
   name: 'users',
   initialState: {
@@ -7,12 +8,7 @@ const userSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {
-    logout: (state) => {
-      state.currentUser = null;
-      state.error = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -25,10 +21,9 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'שגיאת התחברות';
+        state.error = action.payload;
       });
   },
 });
 
-export const { logout } = userSlice.actions;
 export default userSlice.reducer;

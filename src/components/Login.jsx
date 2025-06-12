@@ -11,7 +11,8 @@ import {
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../Redux/Thunk';
+import { loginUser } from '../Redux/userThunks';
+
 const Login = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -50,7 +51,7 @@ const Login = () => {
       setPhone('');
       if (result && result.token) {
         localStorage.setItem('token', result.token);
-        navigate('/Categories'); // נווט לעמוד הבית או עמוד אחר
+        navigate('/Categories'); 
       }
     } catch (err) {
       setMessageType('error');

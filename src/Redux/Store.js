@@ -1,13 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './UserSlice';
 import categoryReducer from './CategorySlice';
-import subCategoryReducer from './SubCategorySlice';
+import subCategoryReducer from './subCategorySlice';
+import userReducer from './userSlice';
+import promptReducer from './promptSlice';
 
 const store = configureStore({
   reducer: {
     users: userReducer,
     categories: categoryReducer,
     subCategories: subCategoryReducer,
+    prompt: promptReducer,
   },
 });
 

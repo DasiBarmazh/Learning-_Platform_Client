@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import { Alert, Box, Button, CircularProgress, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSubCategories, setCurrentSubCategory } from '../Redux/SubCategorySlice';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Box, Typography, CircularProgress, Alert } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { setCurrentSubCategory } from '../Redux/subCategorySlice';
+import { fetchSubCategories } from '../Redux/subCategoryThunks';
+import Prompt from './Prompt'; 
 
 const SubCategories = () => {
   const dispatch = useDispatch();
@@ -18,7 +20,7 @@ const SubCategories = () => {
 
   const handleSubCategoryClick = (subCategory) => {
     dispatch(setCurrentSubCategory(subCategory));
-    navigate(`/details/${subCategory.id}`); // כאן תתרנדר קומפוננטה חדשה בעתיד
+    navigate(`/prompt/${categoryId}/${subCategory.id}`); 
   };
 
   if (loading) return <CircularProgress />;
