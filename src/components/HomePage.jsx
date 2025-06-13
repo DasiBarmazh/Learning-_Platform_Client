@@ -30,9 +30,7 @@ const subjects = [
 
 const HomePage = () => {
   const navigate = useNavigate();
- useEffect(() => {
-    console.clear();
-  }, [dispatch]);
+
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%)' }}>
       <AppBar position="static" sx={{ bgcolor: 'primary.main', boxShadow: 3 }}>

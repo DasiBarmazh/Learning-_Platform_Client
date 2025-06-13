@@ -39,8 +39,8 @@ const Prompt = () => {
     e.preventDefault();
     if (category && subCategory) {
       dispatch(sendPrompt({
-        category: category,
-        subCategory: subCategory,
+        categoryId: categoryId,
+        subCategoryId: subCategoryId,
         userPrompt,
         userId: currentUser ? currentUser.id : null, 
       }));

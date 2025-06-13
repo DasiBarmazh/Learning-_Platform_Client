@@ -19,7 +19,7 @@ import { useEffect } from 'react';
 const Login = () => {
    useEffect(() => {
       console.clear();
-    }, [dispatch]);
+    }, []);
   const [fields, setFields] = useState({ name: '', phone: '' });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
