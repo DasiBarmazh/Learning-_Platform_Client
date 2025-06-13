@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL; 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const sendPrompt = createAsyncThunk(
   'prompt/sendPrompt',
-  async ({ category, subCategory, userPrompt, userId }, thunkAPI) => { // הוסף userId כאן
+  async ({ category, subCategory, userPrompt, userId }, thunkAPI) => {
     try {
       const response = await fetch(`${API_BASE_URL}/Prompt/lesson`, {
         method: 'POST',
@@ -12,7 +12,7 @@ export const sendPrompt = createAsyncThunk(
           category,
           subCategory,
           userPrompt,
-          userId, // הוסף את userId ל-body
+          userId,
         }),
       });
       if (!response.ok) {

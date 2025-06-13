@@ -2,14 +2,14 @@ import SmartToyIcon from '@mui/icons-material/SmartToy';
 import { Alert, Avatar, Box, Button, CircularProgress, TextField, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { sendPrompt } from '../Redux/promptThunks';
-import { setUserPrompt } from '../Redux/promptSlice';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { setUserPrompt } from '../Redux/PromptSlice';
 
 const Prompt = () => {
   const dispatch = useDispatch();
   const { userPrompt, lesson, loading, error } = useSelector(state => state.prompt);
-  const { currentUser } = useSelector(state => state.users); // גישה ל-currentUser
+  const { currentUser } = useSelector(state => state.users); 
   const [showUserError, setShowUserError] = useState(false);
 
   const { categoryId, subCategoryId } = useParams();
@@ -38,8 +38,8 @@ const Prompt = () => {
     e.preventDefault();
     if (category && subCategory) {
       dispatch(sendPrompt({
-        category: category.name,
-        subCategory: subCategory.name,
+        category: category,
+        subCategory: subCategory,
         userPrompt,
         userId: currentUser ? currentUser.id : null, 
       }));

@@ -5,6 +5,8 @@ import { Routes, Route } from 'react-router-dom';
 import Categories from './components/categories';
 import SubCategories from './components/SubCategories';
 import Prompt from './components/Prompt';
+import UserBar from './components/UserBar';
+
 
 function App() {
   return (
@@ -19,8 +21,10 @@ function App() {
     alignItems: 'center',
     justifyContent: 'center',
     background: '#f5f7fa'
+    
   }}
     >
+      <UserBar />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<Register />} />

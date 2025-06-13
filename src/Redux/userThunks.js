@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL; 
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const loginUser = createAsyncThunk(
   'users/loginUser',
   async ({ Name, Phone }, thunkAPI) => {
     try {
+
       const response = await fetch(`${API_BASE_URL}/User/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -24,7 +24,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// thunk לרישום משתמש חדש
 export const registerUser = createAsyncThunk(
   'users/registerUser',
   async ({ name, phone }, thunkAPI) => {
@@ -41,6 +40,22 @@ export const registerUser = createAsyncThunk(
       const token = await response.json();
       localStorage.setItem('token', token);
       return { name, phone, token };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+  
+);
+export const fetchUserPrompts = createAsyncThunk(
+  'users/fetchUserPrompts',
+  async (userId, thunkAPI) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/Prompt/user/${userId}/prompts`);
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err || 'שגיאת שליפת בקשות');
+      }
+      return await response.json();
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
