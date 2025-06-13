@@ -22,6 +22,7 @@ const Prompt = () => {
   );
 
   useEffect(() => {
+    console.clear();
     if (error) {
       console.error('Prompt error:', error);
       setShowUserError(true);

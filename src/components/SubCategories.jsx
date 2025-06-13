@@ -13,6 +13,7 @@ const SubCategories = () => {
   const { subCategories, loading, error } = useSelector(state => state.subCategories);
 
   useEffect(() => {
+    console.clear();
     if (categoryId) {
       dispatch(fetchSubCategories(categoryId));
     }

@@ -5,63 +5,67 @@ import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../Redux/userThunks';
 import { clearRegisterSuccess } from '../Redux/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { clearError } from '../Redux/userSlice';
+
 
 const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, registerSuccess } = useSelector(state => state.users);
 
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [fields, setFields] = useState({ name: '', phone: '' });
   const [errors, setErrors] = useState({});
-
+useEffect(() => {
+  console.clear();
+  dispatch(clearError());
+}, [dispatch]);
   useEffect(() => {
     if (registerSuccess) {
       setTimeout(() => {
         dispatch(clearRegisterSuccess());
-        navigate('/login');
+        navigate('/categories');
       }, 1500);
     }
   }, [registerSuccess, dispatch, navigate]);
 
+  useEffect(() => {
+    if (error) console.error('Register error:', error);
+  }, [error]);
+
   const validate = () => {
-    const newErrors = {};
-    if (!name.trim()) newErrors.name = 'יש להזין שם';
-    if (!phone.trim()) {
-      newErrors.phone = 'יש להזין מספר טלפון';
-    } else if (!/^05\d{8}$/.test(phone)) {
-      newErrors.phone = 'מספר טלפון לא תקין (פורמט: 05XXXXXXXX)';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const errs = {};
+    if (!fields.name.trim()) errs.name = 'יש להזין שם';
+    if (!fields.phone.trim()) errs.phone = 'יש להזין מספר טלפון';
+    else if (!/^05\d{8}$/.test(fields.phone)) errs.phone = 'מספר טלפון לא תקין (פורמט: 05XXXXXXXX)';
+    setErrors(errs);
+    if (Object.keys(errs).length) console.error('Validation errors:', errs);
+    return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleChange = e => setFields(f => ({ ...f, [e.target.name]: e.target.value }));
+
+  const handleSubmit = e => {
     e.preventDefault();
-    if (!validate()) return;
-    dispatch(registerUser({ name, phone }));
+    if (validate()) dispatch(registerUser(fields));
   };
 
   return (
     <Box sx={{
       minHeight: '100vh',
       bgcolor: 'linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      display: 'flex', alignItems: 'center', justifyContent: 'center'
     }}>
       <Paper elevation={6} sx={{ p: 4, borderRadius: 4, minWidth: 350, maxWidth: 400 }}>
         <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-          <Avatar sx={{ bgcolor: 'secondary.main', mb: 1 }}>
-            <PersonAddIcon />
-          </Avatar>
+          <Avatar sx={{ bgcolor: 'secondary.main', mb: 1 }}><PersonAddIcon /></Avatar>
           <Typography variant="h5" fontWeight="bold" color="primary">רישום משתמש חדש</Typography>
         </Box>
         <form onSubmit={handleSubmit}>
           <TextField
             label="שם מלא"
-            value={name}
-            onChange={e => setName(e.target.value)}
+            name="name"
+            value={fields.name}
+            onChange={handleChange}
             fullWidth
             margin="normal"
             error={!!errors.name}
@@ -70,8 +74,9 @@ const Register = () => {
           />
           <TextField
             label="מספר טלפון"
-            value={phone}
-            onChange={e => setPhone(e.target.value)}
+            name="phone"
+            value={fields.phone}
+            onChange={handleChange}
             fullWidth
             margin="normal"
             error={!!errors.phone}
@@ -89,9 +94,12 @@ const Register = () => {
             הרשמה
           </Button>
         </form>
-        {loading && <CircularProgress sx={{ mt: 2 }} />}
+        {Object.values(errors).map((msg, idx) => (
+          <Alert key={idx} severity="error" sx={{ mt: 1, fontSize: 14 }}>{msg}</Alert>
+        ))}
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        {registerSuccess && <Alert severity="success" sx={{ mt: 2 }}>נרשמת בהצלחה! מעביר לעמוד התחברות...</Alert>}
+        {registerSuccess && <Alert severity="success" sx={{ mt: 2 }}>נרשמת בהצלחה! מעביר לעמוד התחומים...</Alert>}
+        {loading && <CircularProgress sx={{ mt: 2 }} />}
         <Button
           color="secondary"
           fullWidth

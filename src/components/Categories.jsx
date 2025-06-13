@@ -11,6 +11,7 @@ const Categories = () => {
   const { categories, loading, error } = useSelector(state => state.categories);
   useEffect(() => {
     dispatch(fetchCategories());
+    console.clear();
   }, [dispatch]);
 
   const handleCategoryClick = (category) => {

@@ -5,7 +5,6 @@ export const loginUser = createAsyncThunk(
   'users/loginUser',
   async ({ Name, Phone }, thunkAPI) => {
     try {
-
       const response = await fetch(`${API_BASE_URL}/User/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -17,7 +16,7 @@ export const loginUser = createAsyncThunk(
       }
       const data = await response.json();
       localStorage.setItem('token', data.token);
-      return data;
+      return { ...data.user, token: data.token };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -28,7 +27,7 @@ export const registerUser = createAsyncThunk(
   'users/registerUser',
   async ({ name, phone }, thunkAPI) => {
     try {
-      const response = await fetch('http://localhost:5282/api/User/SignUp', {
+      const response = await fetch(`${API_BASE_URL}/User/SignUp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ Name: name, Phone: phone }),
@@ -37,15 +36,15 @@ export const registerUser = createAsyncThunk(
         const err = await response.text();
         throw new Error(err || 'שגיאת רישום');
       }
-      const token = await response.json();
+      const token = await response.text();
       localStorage.setItem('token', token);
       return { name, phone, token };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
-  
 );
+
 export const fetchUserPrompts = createAsyncThunk(
   'users/fetchUserPrompts',
   async (userId, thunkAPI) => {

@@ -12,10 +12,15 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../Redux/userThunks';
+import { clearError } from '../Redux/userSlice';
+import { useEffect } from 'react';
+
 
 const Login = () => {
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+   useEffect(() => {
+      console.clear();
+    }, [dispatch]);
+  const [fields, setFields] = useState({ name: '', phone: '' });
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('info');
@@ -23,21 +28,21 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, currentUser } = useSelector(state => state.users);
+  const { loading, error } = useSelector(state => state.users);
 
   const validate = () => {
-    const newErrors = {};
-    if (!name.trim()) newErrors.name = 'יש להזין שם';
-    if (!phone.trim()) {
-      newErrors.phone = 'יש להזין מספר טלפון';
-    } else if (!/^05\d{8}$/.test(phone)) {
-      newErrors.phone = 'מספר טלפון לא תקין (פורמט: 05XXXXXXXX)';
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const errs = {};
+    if (!fields.name.trim()) errs.name = 'יש להזין שם';
+    if (!fields.phone.trim()) errs.phone = 'יש להזין מספר טלפון';
+    else if (!/^05\d{8}$/.test(fields.phone)) errs.phone = 'מספר טלפון לא תקין (פורמט: 05XXXXXXXX)';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleChange = e =>
+    setFields(f => ({ ...f, [e.target.name]: e.target.value }));
+
+  const handleSubmit = async e => {
     e.preventDefault();
     setMessage('');
     setErrors({});
@@ -45,25 +50,25 @@ const Login = () => {
     if (!validate()) return;
 
     try {
-      const result = await dispatch(loginUser({ Name: name, Phone: phone })).unwrap();
+      const result = await dispatch(
+        loginUser({ Name: fields.name, Phone: fields.phone })
+      ).unwrap();
       setMessageType('success');
       setMessage('התחברת בהצלחה!');
-      setName('');
-      setPhone('');
-      if (result && result.token) {
+      setFields({ name: '', phone: '' });
+      if (result?.token) {
         localStorage.setItem('token', result.token);
         navigate('/Categories');
       }
     } catch (err) {
-      // בדיקת שגיאה של משתמש לא קיים
+      setMessageType('error');
       if (err === 'Invalid credentials.') {
-        setMessageType('error');
         setMessage('המשתמש לא קיים במערכת.');
         setShowRegister(true);
       } else {
-        setMessageType('error');
         setMessage(err || 'שגיאת התחברות');
       }
+      console.error('Login error:', err);
     }
   };
 
@@ -103,7 +108,10 @@ const Login = () => {
                 color="secondary"
                 variant="outlined"
                 sx={{ mt: 2, ml: 2 }}
-                onClick={() => navigate('/register')}
+                onClick={() => {
+                  dispatch(clearError());
+                  navigate('/register');
+                }}
               >
                 להרשמה לחץ כאן
               </Button>
@@ -118,11 +126,11 @@ const Login = () => {
         <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
           <TextField
             label="שם"
-            variant="outlined"
+            name="name"
             fullWidth
             margin="normal"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={fields.name}
+            onChange={handleChange}
             error={!!errors.name}
             helperText={errors.name}
             required
@@ -130,11 +138,11 @@ const Login = () => {
           />
           <TextField
             label="מספר טלפון"
-            variant="outlined"
+            name="phone"
             fullWidth
             margin="normal"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            value={fields.phone}
+            onChange={handleChange}
             error={!!errors.phone}
             helperText={errors.phone}
             required

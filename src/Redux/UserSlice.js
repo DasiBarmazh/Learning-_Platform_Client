@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginUser, registerUser ,fetchUserPrompts} from './userThunks';
+import { loginUser, registerUser, fetchUserPrompts } from './userThunks';
 
 const userSlice = createSlice({
   name: 'users',
@@ -13,7 +13,9 @@ const userSlice = createSlice({
   reducers: {
     clearRegisterSuccess: (state) => {
       state.registerSuccess = false;
-    },
+    },clearError: (state) => {
+  state.error = null;
+},
   },
   extraReducers: (builder) => {
     builder
@@ -23,7 +25,8 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.currentUser = action.payload;
+        state.currentUser = action.payload; 
+        state.error = null;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -44,7 +47,7 @@ const userSlice = createSlice({
         state.error = action.payload;
         state.registerSuccess = false;
       });
-       builder
+    builder
       .addCase(fetchUserPrompts.pending, (state) => {
         state.loadingPrompts = true;
         state.errorPrompts = null;
@@ -57,8 +60,8 @@ const userSlice = createSlice({
         state.loadingPrompts = false;
         state.errorPrompts = action.payload;
       });
-  }, 
+  },
 });
 
-export const { clearRegisterSuccess } = userSlice.actions;
+export const { clearRegisterSuccess ,clearError} = userSlice.actions;
 export default userSlice.reducer;
